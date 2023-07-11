@@ -51,11 +51,10 @@ export default function Detail({ params }) {
             <div className="info-detail">
               <div style={{ textAlign: "center" }}>
                 <h3>
-                  "<i>{movie.tagline}</i>"
+                  "<i>{movie.tagline || title}</i>"
                 </h3>
               </div>
               <div>
-                <h3>Overview</h3>
                 <p>{movie.overview}</p>
               </div>
               <div className="genres">
@@ -91,7 +90,6 @@ export default function Detail({ params }) {
             </div>
           </div>
         </div>
-
         <div className="companies-container">
           <h2>Production Companies</h2>
           <div className="companies">
@@ -102,6 +100,12 @@ export default function Detail({ params }) {
                 </div>
               </div>
             ))}
+          </div>
+          <div>
+            Infomation from{" "}
+            <a href="https://www.themoviedb.org/" target="_blank" rel="noopner noreferrer" style={{ color: "inherit" }}>
+              https://www.themoviedb.org
+            </a>
           </div>
         </div>
       </div>
@@ -134,6 +138,8 @@ export default function Detail({ params }) {
           }
           .img-container img {
             max-width: 100%;
+            border-radius: 16px;
+            box-shadow: 0px 0px 12px rgba(0, 0, 0, 0.5);
           }
           .info-detail {
             max-width: 650px;

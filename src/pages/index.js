@@ -3,7 +3,7 @@ import Title from "../../components/Title";
 import { useRouter } from "next/router";
 
 async function fetchData() {
-  const res = await fetch("http://192.168.0.54:3000/api/movies", { cache: "no-store" });
+  const res = await fetch("http://localhost:3000/api/movies", { cache: "no-store" });
   const { results } = await res.json();
   return results;
 }
