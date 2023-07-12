@@ -1,4 +1,4 @@
-import { useRouter } from "next/router";
+import RecomSlider from "../../../components/RecomSlider";
 import Title from "../../../components/Title";
 import { useState, useEffect } from "react";
 
@@ -6,6 +6,12 @@ async function fetchData(id) {
   const res = await fetch(`http://localhost:3000/api/movies/${id}`);
   const result = await res.json();
   return result;
+}
+
+async function getRecommendation(id) {
+  const res = await fetch(`http://localhost:3000/api/movies/recommendation/${id}`, { cache: "no-store" });
+  const { results } = await res.json();
+  return results;
 }
 
 export default function Detail({ params }) {
@@ -16,24 +22,27 @@ export default function Detail({ params }) {
     year: null,
     genres: [],
     companies: [],
+    recommendations: [],
   });
   useEffect(() => {
     setState((state) => ({ ...state, loading: false }));
     const getData = async (id) => {
       setState((state) => ({ ...state, loading: true }));
       const result = await fetchData(id);
+      const recom = await getRecommendation(id);
       setState((state) => ({
         ...state,
         movie: result,
         year: result.release_date.slice(0, 4),
         genres: result.genres,
         companies: result.production_companies,
+        recommendations: recom,
       }));
       setState((state) => ({ ...state, loading: false }));
     };
     getData(id);
   }, [id]);
-  const { movie, loading, year, genres, companies } = state;
+  const { movie, loading, year, genres, companies, recommendations } = state;
   if (loading) return <div>Loading...</div>;
   return (
     <>
@@ -41,7 +50,7 @@ export default function Detail({ params }) {
       <div className="container">
         <div className="movie">
           <h1>
-            {title} <span>({year})</span>
+            {movie.title} <span>({year})</span>
           </h1>
           <div className="line"></div>
           <div className="info-container">
@@ -107,6 +116,9 @@ export default function Detail({ params }) {
               https://www.themoviedb.org
             </a>
           </div>
+        </div>
+        <div>
+          <RecomSlider recommendations={recommendations} />
         </div>
       </div>
 
@@ -199,15 +211,16 @@ export default function Detail({ params }) {
           .companies-container {
             width: 100%;
             text-align: center;
+            margin-bottom: 100px;
           }
           .companies-container > h2 {
             width: 100%;
             height: 50px;
-            border-bottom: 1px solid black;
           }
           .companies{
             display: flex;
             flex-direction: row;
+            flex-wrap: wrap;
             justify-content: center;
             padding: 1rem;
           }
